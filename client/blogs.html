@@ -1,0 +1,12 @@
+<table class="table blogtable">
+    <tr>
+        <td><h3>All Blogs</h3></td>
+        <td></td>
+    </tr>
+    <tr ng-repeat="post in post.posts">
+        <td>{{post.title}}</td>
+        <td>
+            <a class="btn btn-primary" ui-sref="viewBlog({id:post.id})">View</a>
+        </td>
+    </tr>
+</table>
