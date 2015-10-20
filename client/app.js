@@ -11,28 +11,40 @@ angular.module('Tinydocs', ['ngResource', 'ui.router'])
     url:'/posts/:id/view',
     templateUrl: 'blog-view.html',
     controller: 'MainCtrl'
+  }).state('newBlog', {
+    url: 'posts/new',
+    templateUrl: 'blog-add.html',
+    controller: 'CreateCtrl'
   });
+  delete $httpProvider.defaults.headers.common["X-Requested-With"]
 })
 
-.factory('Blog', function($resource){
+.factory('Post', function($resource){
   return $resource('http://localhost:3000/posts/:id',
    {id: '@id'}, {
     'get':    {method:'GET'},
     'save':   {method:'POST'},
-    'query': {method:'GET', isArray: false}
+    'query': {method:'GET', isArray: false},
+    'update': {method: 'PUT'}
   });
 })
 
-.controller('MainCtrl', function($scope, $state, $stateParams, Blog) {
+.controller('MainCtrl', function($scope, $state, $stateParams, Post) {
 
+  $scope.posts=Post.query(function(data){});
 
-  $scope.posts=Blog.query(function(data){});
-
-  $scope.post = Blog.get({id: $stateParams.id});
-
-  $scope.post.$promise.then(function(data){
-    console.log(data.post);
-  })
-
+  $scope.post = Post.get({id: $stateParams.id});
 
 })
+
+.controller('CreateCtrl', function($scope, $state, $stateParams, Post){
+
+    $scope.post = new Post();
+
+    $scope.addPost = function(){
+      $scope.post.$save(function(){
+        $state.go('blogs');
+      });
+    };
+
+ });
